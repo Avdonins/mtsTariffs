@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { scraperController } from "./scaper/scraper.js";
+import { scraperController } from "./scraper/scraper.js";
 
 const router = new Router();
 
-router.get("/tariffs", async (req, res) => {
+router.get("/tariffs", (req, res) => {
     try {
         res.status(200).json(scraperController.getData());
     } catch (error) {
@@ -13,8 +13,8 @@ router.get("/tariffs", async (req, res) => {
 
 router.post("/tariffs", async (req, res) => {
     try {
-        await scraperController.updateData().then(() => {
-            res.status(200).json(scraperController.getData());
+        scraperController.updateData().then(() => {
+            res.status(200).json({message: "Success"});
         })
     } catch (error) {
         res.status(500).json(error);

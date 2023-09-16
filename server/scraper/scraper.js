@@ -1,18 +1,15 @@
 import puppeteer from "puppeteer";
 import fs from "fs";
-import data from "./data.json" assert { type: "json" };
-
-export const scraperController = {
-    getData: () => data,
-    updateData: async () => await main()
-}
+import savedData from "./data.json" assert { type: "json" };
 
 const saveData = (obj) => {
-    console.log('Save data');
-    fs.writeFileSync('data.json', JSON.stringify(obj, null, 4));
+    fs.writeFile('./scraper/data.json', JSON.stringify(obj, null, 4), 'utf-8', (err) => {
+        console.log(`${err}`);
+    })
 }
 
 const getData = async (data, allTariffs) => {
+    let id = 0;
     for (const element of allTariffs) {
         const wrapperDesc = await element.$('.card-description');
         const wrapperFirstMonth = await element.$('.badge-text');
@@ -39,18 +36,19 @@ const getData = async (data, allTariffs) => {
 
         const benefits = {}
         for (const benefit of allBenefits) {
-            if(benefit.includes('ГБ')) benefits['internet'] = benefit;
-            else if(benefit.includes('ТВ')) benefits['tv'] = benefit;
-            else if(benefit.includes('минут')) benefits['mobile'] = benefit;
+            if (benefit.includes('ГБ')) benefits['internet'] = benefit;
+            else if (benefit.includes('ТВ')) benefits['tv'] = benefit;
+            else if (benefit.includes('минут')) benefits['mobile'] = benefit;
             else benefits['wifi'] = benefit
         }
 
-        const otherBenefits = await element.$('.benefits-description').then(async item => 
+        const otherBenefits = await element.$('.benefits-description').then(async item =>
             await item?.evaluate(el => el.textContent)) || null
-        const priceAnnotation = await element.$('.price-annotation').then(async item => 
+        const priceAnnotation = await element.$('.price-annotation').then(async item =>
             await item?.evaluate(el => el.textContent)) || null;
 
         data.tariffs.push({
+            id,
             name,
             description,
             price,
@@ -60,7 +58,9 @@ const getData = async (data, allTariffs) => {
             benefits,
             otherBenefits
         })
+        id++;
     }
+    return data
 }
 
 const main = async () => {
@@ -75,27 +75,28 @@ const main = async () => {
             waitUntil: 'networkidle2'
         });
 
-        // Find block with button "Show more"
-        await page.waitForSelector('.tariffs-more-btn').then(() => console.log('First wrapper found'))
+        // Find block with button "Show more" and wait for it
+        await page.waitForSelector('.tariffs-more-btn')
         while (await page.$('.tariffs-more-btn')) { //While block with button "Show more" exists
             await page.$('.tariffs-more-btn').then(async (element) => {
-                console.log('Button found');
                 let btn = await element.$('.btn');
                 await btn.click();
             })
         }
 
         const allTariffs = await page.$$('mts-tariff-card');
-        await getData(obj, allTariffs)
-        saveData(obj);
-
-        // setTimeout(() => {
-        //     browser.close();
-        // }, 3000);
+        await getData(obj, allTariffs).then((res) => {
+            saveData(res);
+        })
     } catch (error) {
         console.error(`Error: ${error}`);
         browser?.close();
     } finally {
         browser?.close();
     }
+}
+
+export const scraperController = {
+    getData: () => savedData,
+    updateData: async () => await main()
 }
