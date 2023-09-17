@@ -6,6 +6,7 @@ import MobileLogo from '../assets/mobile.svg';
 import WifiLogo from '../assets/wifi.svg';
 import TvLogo from '../assets/tv.svg';
 import GiftLogo from '../assets/gift.svg';
+import { StyledText200, StyledText400, StyledText700, LineThroughText} from './UI/CustomText.js';
 
 const StyledWrapperItem = styled.div`
     display: flex;
@@ -26,30 +27,6 @@ const FlexWrapper = styled.div`
     display: flex;
 `
 
-
-const StyledText200 = styled.p`
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.2rem;
-    padding: 0 15px;
-    font-weight: 200;
-`
-const StyledText400 = styled.p`
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.4rem;
-    padding: 0 15px;
-    font-weight: 400;
-`
-const StyledText700 = styled.p`
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.6rem;
-    padding: 0 15px;
-    font-weight: 700;
-`
-const LineThroughText = styled(StyledText400)`
-    text-decoration: line-through;
-    color: red;
-`
-
 const Item = ({ item }) => {
     return (
         <StyledWrapperItem>
@@ -57,7 +34,7 @@ const Item = ({ item }) => {
                 <StyledText700>{item.name}</StyledText700>
                 {item.isFirstMonth && <StyledText700>Первый месяц бесплатно!</StyledText700>}
             </StyledHeader>
-            <StyledText200>{item.description} руб/мес</StyledText200>
+            <StyledText200>{item.description}</StyledText200>
             {item.benefits &&
                 <WrapperBenefits>
                     {item.benefits.internet &&

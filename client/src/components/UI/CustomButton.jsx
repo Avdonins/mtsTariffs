@@ -14,10 +14,10 @@ const StyledButton = styled.button`
     }
 `
 
-const CustomButton = ({onclick, text}) => {
+const CustomButton = ({onClick, text}) => {
     return (
         <>
-          <StyledButton onClick={() => onclick()}>{text}</StyledButton>  
+          <StyledButton onClick={() => onClick()}>{text}</StyledButton>  
         </>
     );
 };

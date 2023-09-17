@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import CustomButton from './UI/CustomButton.jsx';
+import { StyledText700 } from './UI/CustomText.js';
 
 const StyledHeader = styled.header`
     display: flex;
@@ -9,6 +10,8 @@ const StyledHeader = styled.header`
     padding: 1rem;
     background-color: #FF0000;
     color: white;
+    position: sticky;
+    top: 0;
 `
 
 const StyledTitle = styled.h1`
@@ -23,12 +26,17 @@ const toMainSite = () => {
     );
 }
 
-const Header = () => {
+const Header = ({updateList}) => {
     return (
         <>
             <StyledHeader>
-                <StyledTitle>MTS тарифы</StyledTitle>
-                <CustomButton onclick={() => toMainSite()} text={'Перейти на сайт'}></CustomButton>
+                <StyledTitle>
+                    <StyledText700>
+                        Тарифы MTS
+                    </StyledText700>
+                </StyledTitle>
+                <CustomButton onClick={() => updateList()} text={'Парсить'}></CustomButton>
+                <CustomButton onClick={() => toMainSite()} text={'Перейти на сайт'}></CustomButton>
             </StyledHeader>
         </>
     );
