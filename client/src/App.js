@@ -13,7 +13,7 @@ function App() {
   const [data, setData] = useState([])
 
   const updateList = async () => {
-    //https://myServer-btyb.onrender.com
+    //https://myServerMts-btyb.onrender.com
     setIsLoading(true)
     await axios.post(`./api/tariffs`).then(async () => {
       await axios.get(`./api/tariffs`).then(res => {
